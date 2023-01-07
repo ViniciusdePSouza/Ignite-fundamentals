@@ -10,6 +10,8 @@ import { Comment } from '../Comment/Comment'
 import { Avatar } from '../Avatar/Avatar';
 
 export function Post({ author, content, publishedAt }) {
+    const [comments, setComments] = useState([])
+    const [newComment, setNewComment] = useState('')
 
     const publishedDateFormat = format(new Date(), "dd 'de' LLLL às HH:mm'h'", {
         locale: ptBR,
@@ -28,9 +30,11 @@ export function Post({ author, content, publishedAt }) {
         setNewComment('')
     }
 
-    const [comments, setComments] = useState([])
+    function deleteComment(commentToDelete) {
+        const commentsWithoutDeleteOne = comments.filter(comment => comment !== commentToDelete)
 
-    const [newComment, setNewComment] = useState('')
+        setComments(commentsWithoutDeleteOne)
+    }
 
     return (
         <article className={styles.post}>
@@ -49,9 +53,9 @@ export function Post({ author, content, publishedAt }) {
             <div className={styles.content}>
                 {content.map(line => {
                     if (line.type === 'paragraph') {
-                        return <p key={Math.random()*1000}>{line.content}</p>
+                        return <p key={Math.random() * 1000}>{line.content}</p>
                     } else if (line.type === 'link') {
-                        return <p key={Math.random()*1000}><a href="#">{line.content}</a></p>
+                        return <p key={Math.random() * 1000}><a href="#">{line.content}</a></p>
                     }
                 })}
             </div>
@@ -72,7 +76,7 @@ export function Post({ author, content, publishedAt }) {
 
             <div className={styles.commentList}>
                 {comments.map(comment => {
-                    return <Comment key={Math.random()*1000} content={comment}/>
+                    return <Comment key={comment} content={comment} onDeleteComment={deleteComment} />
                 })}
             </div>
         </article>
